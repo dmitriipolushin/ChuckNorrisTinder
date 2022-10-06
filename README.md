@@ -28,4 +28,6 @@ I used flutter_lint and option+shift+f command
 
 ## Screenshot of the app
 
+[APK](app-release.apk)
+
 ![App screen](app.png "app screen")
