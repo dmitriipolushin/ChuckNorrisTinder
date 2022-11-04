@@ -1,35 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
+import 'package:test_app/bloc/jokes_bloc.dart';
+import 'package:test_app/services/fav_joke.dart';
 import 'package:test_app/styles.dart';
 import '../services/get_joke.dart';
 
-class JokeCard extends StatefulWidget {
-  const JokeCard({Key? key}) : super(key: key);
-
-  @override
-  State<JokeCard> createState() => _JokeCardState();
-}
-
-class _JokeCardState extends State<JokeCard> {
-  Future<String> jokeText = getNewJoke();
-
-  void _newJoke() {
-    print('new joke');
-    setState(() {
-      jokeText = getNewJoke();
-    });
-  }
+class JokeCard extends StatelessWidget {
+  const JokeCard({super.key});
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
         children: [
-          FutureBuilder<String>(
-            future: jokeText,
-            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+          BlocBuilder<JokeBloc, JokesStates>(
+            builder: (BuildContext context, state) {
               List<Widget> children;
-              print(snapshot.data);
-              if (snapshot.hasData) {
+              if (state is JokesDataState) {
                 children = <Widget>[
                   Container(
                     height: 358,
@@ -38,29 +26,13 @@ class _JokeCardState extends State<JokeCard> {
                     margin: const EdgeInsets.symmetric(horizontal: 8.0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20.0),
-                      color: Styles.CardBackgoround,
+                      color: Styles.cardBackgoround,
                     ),
                     child: Center(
                       child: Text(
-                        snapshot.data ?? '',
+                        state.data,
                         style: const TextStyle(color: Colors.white),
                       ),
-                    ),
-                  )
-                ];
-              } else if (snapshot.hasError) {
-                children = <Widget>[
-                  Container(
-                    height: 358,
-                    width: 382,
-                    padding: const EdgeInsets.all(8.0),
-                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                      color: Styles.CardBackgoround,
-                    ),
-                    child: const Center(
-                      child: Text('Error'),
                     ),
                   )
                 ];
@@ -73,7 +45,7 @@ class _JokeCardState extends State<JokeCard> {
                     margin: const EdgeInsets.symmetric(horizontal: 8.0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20.0),
-                      color: Styles.CardBackgoround,
+                      color: Styles.cardBackgoround,
                     ),
                     child: const Center(
                       child: CircularProgressIndicator(),
@@ -101,9 +73,7 @@ class _JokeCardState extends State<JokeCard> {
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xff0C2BF2)),
                 onPressed: () {
-                  setState(() {
-                    jokeText = getNewJoke();
-                  });
+                  context.read<JokeBloc>().add(JokeLikeEvent());
                 },
                 child: const Text('Like'),
               ),
@@ -118,9 +88,7 @@ class _JokeCardState extends State<JokeCard> {
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xff0C2BF2)),
                 onPressed: () {
-                  setState(() {
-                    jokeText = getNewJoke();
-                  });
+                  context.read<JokeBloc>().add(JokePassEvent());
                 },
                 child: const Text('Pass'),
               ),

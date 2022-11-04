@@ -18,6 +18,7 @@ The list of using widgets:
 - SafeArea
 - Column, Row
 - Padding
+- Container
 
 I used StatelessWidget to create the basic screen content like header and image. To add elements that can change their state during the work of application I used StatefulWidget (joke card).
 
@@ -30,4 +31,5 @@ I used flutter_lint and option+shift+f command
 
 [APK](app-release.apk)
 
-![App screen](app.png "app screen")
+![App screen](readme_assets/app.png "app screen")
+![App screen](readme_assets/app1.png "app screen")
